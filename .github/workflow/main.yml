@@ -1,0 +1,37 @@
+# GitHub Action for generating a contribution graph with a snake eating your contributions.
+
+name: Generate Animation
+
+on:
+  # run automatically every 12 hours
+  schedule:
+    - cron: "30 8,23 * * *" 
+  
+  # allows to manually run the job at any time
+  workflow_dispatch:
+  
+  # Re-Run Program when pushing
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: windows-10-professional
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Generate Snake
+        uses: Platane/snk@v3
+        id: snake-animation
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            ./assets/github-contribution-grid-snake.svg
+
+      - name: Push to GitHub
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Generate Github contribution heatmap animation'
